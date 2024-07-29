@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commette Chat</title>
+    <style>
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <h1>Commette Chat</h1>
+
+    <h2>Insertar Usuario</h2>
+    <form id="insertUserForm">
+        <label for="id_user">ID Usuario:</label>
+        <input type="text" id="id_user" name="id_user" required>
+        <button type="submit">Insertar Usuario</button>
+    </form>
+
+    <h2>Crear Conversación</h2>
+    <form id="createConversationForm">
+        <label for="id_participants">ID Participantes (separados por comas):</label>
+        <input type="text" id="id_participants" name="id_participants" required>
+        <button type="submit">Crear Conversación</button>
+    </form>
+
+    <h2>Enviar Mensaje</h2>
+    <form id="createMessageForm">
+        <label for="conversation_id">Conversation ID:</label>
+        <input type="text" id="conversation_id" name="conversation_id" required>
+        <label for="sender_id">Sender ID:</label>
+        <input type="text" id="sender_id" name="sender_id" required>
+        <label for="message_content">Message Content:</label>
+        <input type="text" id="message_content" name="message_content" required>
+        <label for="timestamp">Timestamp:</label>
+        <input type="datetime-local" id="timestamp" name="timestamp" required>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <div id="messages"></div>
+
+    <script>
+  const conversationId = '66a679f140d5cbc6140fac4f'; 
+        const ws = new WebSocket(`ws://${window.location.host}/ws/${conversationId}`);
+
+        ws.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${message.sender_id}: ${message.content} (${message.timestamp})`;
+            document.getElementById('messages').appendChild(messageElement);
+        };
+
+        document.getElementById('createMessageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const senderId = document.getElementById('sender_id').value.trim();
+            const messageContent = document.getElementById('message_content').value.trim();
+
+            const message = {
+                conversation_id: conversationId,
+                sender_id: senderId,
+                content: messageContent,
+                timestamp: new Date().toISOString()
+            };
+
+            ws.send(JSON.stringify(message));
+        });
+        document.getElementById('insertUserForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const idUser = document.getElementById('id_user').value;
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_user: idUser })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Usuario insertado: ' + JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('createConversationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const idParticipants = document.getElementById('id_participants').value.split(',').map(id => id.trim());
+
+            fetch('/api/conversations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_participants: idParticipants })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Conversación creada: ' + JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('createMessageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const conversationId = document.getElementById('conversation_id').value.trim();
+            const senderId = document.getElementById('sender_id').value.trim();
+            const messageContent = document.getElementById('message_content').value.trim();
+            const timestamp = document.getElementById('timestamp').value;
+
+            fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conversation_id: conversationId, sender_id: senderId, content: messageContent, timestamp: timestamp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Mensaje enviado: ' + JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
