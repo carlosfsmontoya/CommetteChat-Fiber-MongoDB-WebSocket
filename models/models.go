@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // User representa un usuario en el chat
 type User struct {
 	IDUser int `json:"id_user"`
@@ -12,8 +14,8 @@ type Conversation struct {
 
 // Message representa un mensaje en el chat
 type Message struct {
-	ConversationID string `json:"conversation_id"`
-	SenderID       string `json:"sender_id"`
-	Content        string `json:"content"`
-	Timestamp      string `json:"timestamp"`
+	ConversationID string    `json:"conversation_id" bson:"conversation_id"`
+	SenderID       string    `json:"sender_id" bson:"sender_id"`
+	Content        string    `json:"content" bson:"content"`
+	Timestamp      time.Time `json:"timestamp" bson:"timestamp"`
 }

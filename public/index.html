@@ -47,7 +47,7 @@
 
     <script>
   const conversationId = '66a679f140d5cbc6140fac4f'; 
-        const ws = new WebSocket(`ws://${window.location.host}/ws/${conversationId}`);
+        const ws = new WebSocket(`ws://127.0.0.1:4000/ws/${conversationId}`);
 
         ws.onmessage = function(event) {
             const message = JSON.parse(event.data);

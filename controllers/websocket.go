@@ -26,7 +26,8 @@ func HandleWebSocket(c *websocket.Conn) {
 			log.Printf("error: %v", err)
 			break
 		}
-		msg.Timestamp = time.Now().Format("2006-01-02T15:04:05")
+		timestamp, _ := time.Parse("2006-01-02T15:04:05", time.Now().Format("2006-01-02T15:04:05"))
+		msg.Timestamp = timestamp
 		broadcast <- msg
 	}
 }
