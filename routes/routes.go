@@ -12,7 +12,8 @@ func SetupRoutes(app *fiber.App) {
 
 	api := app.Group("/api")
 
-	api.Post("/users", controllers.InsertUser)
+	api.Post("/users", middleware.SecretKeyRequired(), controllers.InsertUser)
+
 	api.Post("/conversations", controllers.StartConversation)
 	api.Post("/messages", controllers.InsertMessage)
 

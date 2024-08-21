@@ -37,3 +37,22 @@ func AuthRequired() fiber.Handler {
 		return c.Next()
 	}
 }
+
+func SecretKeyRequired() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// Obtener la clave secreta del encabezado
+		secretKey := c.Get("X-Secret-Key")
+		if secretKey == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Missing secret key"})
+		}
+
+		// Comparar la clave secreta con la esperada
+		expectedSecretKey := os.Getenv("FAST_GO_KEY")
+		if secretKey != expectedSecretKey {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid secret key"})
+		}
+
+		// Continuar con la siguiente función en la pila de middleware
+		return c.Next()
+	}
+}

@@ -33,7 +33,7 @@ func main() {
 		}
 	}()
 
-	if err := app.Listen(":3001"); err != nil {
+	if err := app.Listen(":4000"); err != nil {
 		log.Fatalf("Error iniciando el servidor: %v", err)
 	}
 }

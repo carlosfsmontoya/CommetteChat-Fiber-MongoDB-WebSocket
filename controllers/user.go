@@ -16,6 +16,16 @@ func InsertUser(c *fiber.Ctx) error {
 	}
 
 	userCollection := config.GetCollection(config.DB, "users")
+
+	// Verificar si el id_user ya existe
+	var existingUser models.User
+	err := userCollection.FindOne(context.TODO(), bson.M{"id_user": user.IDUser}).Decode(&existingUser)
+	if err == nil {
+		// Si no hay error, significa que el usuario ya existe
+		return c.Status(fiber.StatusConflict).SendString("User already exists")
+	}
+
+	// Insertar el nuevo usuario si no existe
 	newUser := bson.M{
 		"id_user": user.IDUser,
 	}

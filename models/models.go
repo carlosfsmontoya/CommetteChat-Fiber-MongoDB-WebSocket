@@ -2,7 +2,7 @@ package models
 
 // User representa un usuario en el chat
 type User struct {
-	IDUser string `json:"id_user"`
+	IDUser int `json:"id_user"`
 }
 
 // Conversation representa una conversación en el chat
