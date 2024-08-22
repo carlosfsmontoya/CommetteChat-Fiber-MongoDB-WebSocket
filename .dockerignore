@@ -1,0 +1,21 @@
+# Ignora el binario compilado
+main
+
+# Ignora los archivos de configuración de la IDE
+.vscode/
+.idea/
+
+# Ignora los archivos de control de versiones
+.git/
+.gitignore
+
+# Ignora los archivos de dependencias locales
+vendor/
+
+# Ignora los archivos de construcción de Docker
+Dockerfile
+.dockerignore
+
+# Ignora otros archivos innecesarios
+node_modules/
+tmp/

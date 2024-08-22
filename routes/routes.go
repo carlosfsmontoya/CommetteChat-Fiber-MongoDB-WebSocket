@@ -14,8 +14,8 @@ func SetupRoutes(app *fiber.App) {
 
 	api.Post("/users", middleware.SecretKeyRequired(), controllers.InsertUser)
 
-	api.Post("/conversations", controllers.StartConversation)
-	api.Post("/messages", controllers.InsertMessage)
+	api.Post("/conversations", middleware.AuthRequired(), controllers.StartConversation)
+	api.Post("/messages", middleware.AuthRequired(), controllers.InsertMessage)
 
 	api.Get("/hello", middleware.AuthRequired(), func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
